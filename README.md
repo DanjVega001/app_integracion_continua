@@ -75,3 +75,25 @@ DB_HOST=db
 ```
 
 No se usa `localhost` ni IPs fijas en ningún punto.
+
+
+
+## (GitHub Actions)
+
+El proyecto cuenta con un pipeline de integración continua
+implementado mediante GitHub Actions.
+
+Este pipeline se ejecuta automáticamente cuando se realizan
+cambios (push) en la rama main o cuando se crea un pull request.
+
+Durante su ejecución se realizan las siguientes tareas:
+
+- Descarga del código fuente.
+- Configuración del entorno Docker.
+- Validación de Docker Compose.
+- Descarga de las imágenes oficiales de MySQL y Nginx.
+- Construcción de la imagen personalizada de PHP.
+
+El objetivo es verificar automáticamente que los servicios
+mantengan una configuración válida y que sus imágenes
+puedan construirse correctamente.
