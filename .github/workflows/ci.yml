@@ -1,0 +1,40 @@
+
+name: Integracion Continua - TaskFlow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validar y construir servicios
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Crear archivo de variables
+        run: cp .env.example .env
+
+      - name: Validar configuracion de Docker Compose
+        run: docker compose config --quiet
+
+      - name: Descargar imagenes de MySQL y Nginx
+        run: docker compose pull db nginx
+
+      - name: Construir imagen de PHP
+        run: docker compose build --pull php
+
+      - name: Finalizar
+        run: echo "Pipeline CI ejecutado correctamente"
