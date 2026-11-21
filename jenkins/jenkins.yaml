@@ -20,7 +20,7 @@ jobs:
       pipelineJob('taskflow-pipeline') {
         description('Pipeline CI para TaskFlow — se dispara con Poll SCM')
         definition {
-          cpsScmFlowDefinition {
+          cpsScm {
             scm {
               git {
                 remote {
