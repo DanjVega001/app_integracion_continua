@@ -1,0 +1,38 @@
+# Configuration as Code: Jenkins listo sin asistente de instalación
+jenkins:
+  systemMessage: "Jenkins CI — TaskFlow (PHP + MySQL + Nginx)"
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID:-estudiante}"
+          password: "${JENKINS_ADMIN_PASSWORD:-cambiar-esta-clave}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+
+jobs:
+  - script: |
+      pipelineJob('taskflow-pipeline') {
+        description('Pipeline CI para TaskFlow — se dispara con Poll SCM')
+        definition {
+          cpsScmFlowDefinition {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/DanjVega001/app_integracion_continua.git')
+                }
+                branches('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+          }
+        }
+        triggers {
+          scm('H/2 * * * *')
+        }
+      }
