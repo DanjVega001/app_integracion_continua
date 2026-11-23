@@ -1,0 +1,23 @@
+# Override usado SOLO por Jenkins:
+#   docker compose -f docker-compose.yml -f docker-compose.ci.yml ...
+#
+# - volumes: Jenkins corre en un contenedor y usa el Docker del host, así que
+#   las rutas relativas (./app/) no existen en el host. Se prueban las
+#   imágenes tal como se construyeron, con el código copiado dentro.
+# - ports: no se publican puertos para no chocar con la app local (80/3306).
+# - container_name: se quitan los nombres fijos para que cada build use su
+#   propio proyecto (taskflow-ci-<n>) sin chocar con contenedores existentes.
+services:
+  php:
+    container_name: !reset null
+    volumes: !reset []
+
+  db:
+    container_name: !reset null
+    ports: !reset []
+    volumes: !reset []
+
+  nginx:
+    container_name: !reset null
+    ports: !reset []
+    volumes: !reset []

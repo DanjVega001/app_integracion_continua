@@ -38,7 +38,7 @@ Esto levanta tres servicios:
 |---|---|---|
 | `php` | Dockerfile propio (`php:8.2.27-fpm`) | Ejecuta la aplicación PHP |
 | `db` | `mysql:8.2.0` | Base de datos MySQL |
-| `nginx` | `nginx:1.27-alpine` | Servidor web, expone el puerto 80 |
+| `nginx` | Dockerfile propio (`Dockerfile.nginx`, base `nginx:1.27-alpine`) | Servidor web, expone el puerto 80 |
 
 ### 4. Abrir la aplicación
 
@@ -97,3 +97,26 @@ Durante su ejecución se realizan las siguientes tareas:
 El objetivo es verificar automáticamente que los servicios
 mantengan una configuración válida y que sus imágenes
 puedan construirse correctamente.
+
+## Pipeline de Jenkins (Jenkinsfile)
+
+El `Jenkinsfile` de la raíz define el pipeline como código. Jenkins lo ejecuta en cada push a `main` (Poll SCM, configurado en `jenkins/jenkins.yaml`).
+
+| Etapa | Qué hace |
+|---|---|
+| **Checkout** | Descarga el commit desde GitHub y muestra autor y mensaje. |
+| **Build** | Valida el compose y construye las imágenes de los dos servicios propios: `taskflow-php:<build>` (`Dockerfile`) y `taskflow-nginx:<build>` (`Dockerfile.nginx`). |
+| **Test** | 1) `php -l` sobre todos los `.php` de la imagen. 2) Levanta el compose y espera a que `db` esté healthy. 3) `nginx` obtiene la página desde `php` por nombre de servicio. 4) `php` se conecta a `db` por nombre de servicio. 5) Llama a la API de punta a punta. Si algo falla, el build falla. |
+| **post** | `failure`: muestra los logs de los contenedores. `fixed`: avisa que el pipeline volvió a verde. `cleanup`: apaga el entorno de prueba (`down -v`) y borra el `.env` temporal. |
+
+En CI se agrega `docker-compose.ci.yml`, que quita los volúmenes, los puertos y los nombres fijos. Así se prueban las imágenes construidas y cada build corre aislado en su propio proyecto (`taskflow-ci-<build>`).
+
+Para ejecutar las mismas pruebas en local:
+
+```bash
+cp .env.example .env
+docker compose -f docker-compose.yml -f docker-compose.ci.yml build php nginx
+docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --wait
+docker compose -f docker-compose.yml -f docker-compose.ci.yml exec -T nginx wget -qO- "http://localhost/api.php?action=list"
+docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
+```

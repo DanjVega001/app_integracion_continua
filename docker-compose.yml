@@ -1,6 +1,7 @@
 services:
   php:
     container_name: php
+    image: taskflow-php:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile
@@ -39,7 +40,10 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:1.27-alpine
+    image: taskflow-nginx:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     ports:
       - '80:80'
     volumes:

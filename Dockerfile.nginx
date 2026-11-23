@@ -1,0 +1,11 @@
+# Imagen propia del servidor web: nginx con la configuración y los
+# archivos estáticos de TaskFlow incluidos (no depende de volúmenes).
+FROM nginx:1.27-alpine
+
+# Configuración que reenvía las peticiones .php al servicio "php" (php:9000)
+COPY app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Archivos públicos (HTML/CSS/JS/SVG) que nginx sirve directamente
+COPY app/ /var/www/public/
+
+EXPOSE 80
