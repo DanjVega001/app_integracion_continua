@@ -12,6 +12,10 @@ services:
       VERSION: 1
       BUILD: 1
       POST: 1
+      BUILDKIT: 1
+      ALLOW_START: 1
+      GRPC: 1
+      DISTRIBUTION: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
