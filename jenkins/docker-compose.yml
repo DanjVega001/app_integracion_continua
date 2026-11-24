@@ -10,13 +10,13 @@ services:
       VOLUMES: 1
       INFO: 1
       VERSION: 1
+      BUILD: 1
       POST: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - taskflow-net
     restart: unless-stopped
-
   jenkins:
     build: .
     image: jenkins-taskflow:lts
