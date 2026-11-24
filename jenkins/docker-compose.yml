@@ -12,9 +12,7 @@ services:
       VERSION: 1
       BUILD: 1
       POST: 1
-      BUILDKIT: 1
       ALLOW_START: 1
-      GRPC: 1
       DISTRIBUTION: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -34,6 +32,7 @@ services:
       JENKINS_ADMIN_ID: ${JENKINS_ADMIN_ID:-estudiante}
       JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:-cambiar-esta-clave}
       DOCKER_HOST: "tcp://docker-proxy:2375"
+      DOCKER_BUILDKIT: "0"
     volumes:
       - jenkins_home:/var/jenkins_home
     networks:
