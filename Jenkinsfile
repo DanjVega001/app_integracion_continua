@@ -57,7 +57,7 @@ pipeline {
                     echo "== 3. nginx -> php por nombre de servicio (fastcgi_pass php:9000) =="
                     ok=0
                     for i in 1 2 3 4 5 6 7 8 9 10; do
-                        if $COMPOSE exec -T nginx wget -qO- http://localhost/ | grep -q "<title>TaskFlow</title>"; then
+                        if $COMPOSE exec -T nginx wget -qO- http://127.0.0.1/ | grep -q "<title>TaskFlow</title>"; then
                             ok=1; break
                         fi
                         echo "Intento $i sin respuesta, reintentando..."; sleep 3
@@ -71,7 +71,7 @@ pipeline {
                         echo "Conexión a db OK (MySQL " . $pdo->query("SELECT VERSION()")->fetchColumn() . ")\n";'
 
                     echo "== 5. API de punta a punta: nginx -> php -> db =="
-                    $COMPOSE exec -T nginx wget -qO- "http://localhost/api.php?action=list"
+                    $COMPOSE exec -T nginx wget -qO- "http://127.0.0.1/api.php?action=list"
                     echo
                     echo "Todas las pruebas pasaron"
                 '''
