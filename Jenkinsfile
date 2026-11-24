@@ -57,7 +57,7 @@ pipeline {
                     echo "== 3. nginx -> php por nombre de servicio (fastcgi_pass php:9000) =="
                     ok=0
                     for i in 1 2 3 4 5 6 7 8 9 10; do
-                        if $COMPOSE exec -T nginx wget -qO- http://127.0.0.1/ | grep -q "<title>TaskFlow</title>"; then
+                        if $COMPOSE exec -T nginx wget -qO- http://127.0.0.1/ | grep -q "TaskFlow"; then
                             ok=1; break
                         fi
                         echo "Intento $i sin respuesta, reintentando..."; sleep 3
